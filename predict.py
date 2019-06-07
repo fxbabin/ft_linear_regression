@@ -2,16 +2,14 @@
 #   LIBRAIRIES   #
 ##################
 
-import tensorflow as tf
-import numpy as np
-import pandas as pd
+import vaex
 
 ##################
 #   FUNCTIONS    #
 ##################
 
 def main():
-	data = pd.read_csv('Models/weights.csv', sep=',')
+	df = vaex.open("Data/data.csv")
 	weight = float(data.weight)
 	bias = float(data.bias)
 	mileage = input("Please enter a mileage : ")
