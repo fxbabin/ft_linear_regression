@@ -125,58 +125,58 @@ def get_arguments ():
 
 def main():
     
-    # Retrieving data
-    filename = get_arguments()
     try:
-        open(filename, "r")
+        # Retrieving data
+        filename = get_arguments()
+        df = vaex.open(filename)
+        X = np.array(df[['km']]).flatten()
+        y = np.array(df[['price']]).flatten()
+
+        # Feature normalize
+        X, x_min, x_max = featureNormalize(X)
+
+        # Add 1 vector for biais unit
+        X = np.c_[np.ones(X.shape[0]), X]
+
+        # Training the bonuses
+        print("Training with weird parameters ...\n")
+        theta = np.zeros(2)
+        theta, J_history = gradient_descent(X, y, theta,
+                        alpha=0.01,
+                        num_iters=200,
+                        decay_rate=0.0001, lbda=0.0001, batch_size=14)
+
+        fit = plt.figure()
+        ax = plt.axes()
+        ax.plot(J_history)
+        plt.savefig('cost_history_bonus.png')
+
+        plot(df, theta, "visu_bonus")
+
+        with open("Models/weights.csv", "w") as weight_file:
+            weight_file.write("biais,weight\n")
+            weight_file.write("{},{}\n".format(theta[0], theta[1]))
+
+        # Training the model
+        print("\nTraining on the data ...\n")
+        theta = np.zeros(2)
+        theta, J_history = gradient_descent(X, y, theta,
+                        alpha=0.01,
+                        num_iters=20000,
+                        decay_rate=0.0, lbda=0.0)
+
+        fit = plt.figure()
+        ax = plt.axes()
+        ax.plot(J_history)
+        plt.savefig('cost_history.png')
+
+        plot(df, theta, "visu")
+
+        with open("Models/weights.csv", "w") as weight_file:
+            weight_file.write("biais,weight\n")
+            weight_file.write("{},{}\n".format(theta[0], theta[1]))
     except Exception as e:
         print(e)
-        sys.exit(-1)
-    df = vaex.open(filename)
-    X = np.array(df[['km']]).flatten()
-    y = np.array(df[['price']]).flatten()
-
-    # Feature normalize
-    X, x_min, x_max = featureNormalize(X)
-
-    # Add 1 vector for biais unit
-    X = np.c_[np.ones(X.shape[0]), X]
-
-    # Training the model
-    theta = np.zeros(2)
-    theta, J_history = gradient_descent(X, y, theta,
-                    alpha=0.01,
-                    num_iters=20000,
-                    decay_rate=0.0, lbda=0.0)
-
-    fit = plt.figure()
-    ax = plt.axes()
-    ax.plot(J_history)
-    plt.savefig('cost_history.png')
-
-    plot(df, theta, "visu")
-
-    with open("Models/weights.csv", "w") as weight_file:
-        weight_file.write("biais,weight\n")
-        weight_file.write("{},{}\n".format(theta[0], theta[1]))
-
-    # Training the bonuses
-    theta = np.zeros(2)
-    theta, J_history = gradient_descent(X, y, theta,
-                    alpha=0.01,
-                    num_iters=15000,
-                    decay_rate=0.0001, lbda=0.0001, batch_size=7)
-
-    fit = plt.figure()
-    ax = plt.axes()
-    ax.plot(J_history)
-    plt.savefig('cost_history_bonus.png')
-
-    plot(df, theta, "visu_bonus")
-
-    with open("Models/weights.csv", "w") as weight_file:
-        weight_file.write("biais,weight\n")
-        weight_file.write("{},{}\n".format(theta[0], theta[1]))
 
 if __name__ == "__main__":
     main()

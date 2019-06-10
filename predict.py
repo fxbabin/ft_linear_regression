@@ -19,16 +19,12 @@ def get_arguments():
 
 
 def main():
-	mileage = get_arguments()
-	if float(mileage) < 0.0 :
-		print("enter a positive mileage")
-		sys.exit(-1)
 	try:
-		open("Models/weights.csv", "r")
-	except Exception as e:
-		print(e)
-		sys.exit(-1)
-	try:
+		mileage = get_arguments()
+		if float(mileage) < 0.0 :
+			print("enter a positive mileage")
+			sys.exit(-1)
+		open("Models/weights.csv")
 		df = vaex.open("Models/weights.csv")
 		print("The given price for {} mile(s) is :".format(mileage))
 		print(float(df['biais'].values[0]) + float(mileage) * float(df['weight'].values[0]))
