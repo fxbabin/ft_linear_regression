@@ -13,13 +13,16 @@ import sys
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Data generator program.')
-    parser.add_argument('-m', '--mileage', help='mileage')
+    parser.add_argument('-m', '--mileage', help='mileage', required=True)
     res = parser.parse_args(sys.argv[1:])
     return (res.mileage)
 
 
 def main():
 	mileage = get_arguments()
+	if float(mileage) < 0.0 :
+		print("enter a positive mileage")
+		sys.exit(-1)
 	try:
 		open("Models/weights.csv", "r")
 	except Exception as e:

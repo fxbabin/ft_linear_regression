@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import random
 import sys
 import argparse
+from tqdm import tqdm
 
 ##################
 #   FUNCTIONS    #
@@ -70,7 +71,7 @@ def gradient_descent(X, y, theta,
     decay_rate = 0.0 if b_size == m else decay_rate
     prev_cost = 0
     
-    for i in range(num_iters):
+    for i in tqdm(range(num_iters)):
         
         # regularization
         reg = get_regularization_derived(theta, lbda, b_size, regularization)
@@ -100,7 +101,7 @@ def abline(slope, intercept):
     y_vals = intercept + slope * x_vals
     plt.plot(x_vals, y_vals, '--')
 
-def plot(df, theta):
+def plot(df, theta, name):
     plt.clf()
     X = np.array(df[['km']]).flatten()
     y = np.array(df[['price']]).flatten()
@@ -112,7 +113,8 @@ def plot(df, theta):
 
     plt.scatter(X, y)
     abline(theta[1], theta[0])
-    plt.savefig('visu.png') 
+    plt.savefig(name + ".png")
+    plt.clf()
 
 
 def get_arguments ():
@@ -152,7 +154,25 @@ def main():
     ax.plot(J_history)
     plt.savefig('cost_history.png')
 
-    plot(df, theta)
+    plot(df, theta, "visu")
+
+    with open("Models/weights.csv", "w") as weight_file:
+        weight_file.write("biais,weight\n")
+        weight_file.write("{},{}\n".format(theta[0], theta[1]))
+
+    # Training the bonuses
+    theta = np.zeros(2)
+    theta, J_history = gradient_descent(X, y, theta,
+                    alpha=0.01,
+                    num_iters=15000,
+                    decay_rate=0.0001, lbda=0.0001, batch_size=7)
+
+    fit = plt.figure()
+    ax = plt.axes()
+    ax.plot(J_history)
+    plt.savefig('cost_history_bonus.png')
+
+    plot(df, theta, "visu_bonus")
 
     with open("Models/weights.csv", "w") as weight_file:
         weight_file.write("biais,weight\n")
