@@ -147,7 +147,7 @@ def main():
         theta, J_history = gradient_descent(X, y, theta,
                         alpha=0.01,
                         num_iters=20000,
-                        decay_rate=0.00001, lbda=0.0001, batch_size=14, tol=5)
+                        decay_rate=0.00001, lbda=0.0001, batch_size=6, tol=1)
 
         fit = plt.figure()
         ax = plt.axes()
