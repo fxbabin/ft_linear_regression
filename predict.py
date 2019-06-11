@@ -2,8 +2,8 @@
 #   LIBRAIRIES   #
 ##################
 
-import vaex
-import argparse
+from vaex import open as vx_open
+from argparse import ArgumentParser
 import sys
 
 ##################
@@ -12,22 +12,24 @@ import sys
 
 
 def get_arguments():
-    parser = argparse.ArgumentParser(description='Data generator program.')
-    parser.add_argument('-m', '--mileage', help='mileage', required=True)
-    res = parser.parse_args(sys.argv[1:])
-    return (res.mileage)
-
+	parser = ArgumentParser(description='Data generator program.')
+	parser.add_argument('-m', '--mileage', type=int, help='mileage', required=True)
+	res = parser.parse_args(sys.argv[1:])
+	if float(res.mileage) < 0.0 or float(res.mileage) > 250000.0:
+		raise ValueError("Incorrect mileage (values must be between 0 and 250000)")
+	return (res.mileage)
 
 def main():
 	try:
 		mileage = get_arguments()
-		if float(mileage) < 0.0 :
-			print("enter a positive mileage")
-			sys.exit(-1)
-		open("Models/weights.csv")
-		df = vaex.open("Models/weights.csv")
-		print("The given price for {} mile(s) is :".format(mileage))
-		print(float(df['biais'].values[0]) + float(mileage) * float(df['weight'].values[0]))
+	except Exception as e:
+		print ("Error in arguments: {}".format(e))
+		sys_exit(-1)
+
+	try:
+		df = vx_open("Models/weights.csv")
+		res = float(df['biais'].values[0]) + float(mileage) * float(df['weight'].values[0])
+		print("The given price for {} mile(s) is :\n{}".format(mileage, res))
 	except Exception as e:
 		print(e)
 

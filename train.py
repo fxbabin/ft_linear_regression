@@ -2,12 +2,12 @@
 #   LIBRAIRIES   #
 ##################
 
-import vaex
+from vaex import open as vx_open
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 import sys
-import argparse
+from argparse import ArgumentParser
 from tqdm import tqdm
 
 ##################
@@ -118,7 +118,7 @@ def plot(df, theta, name):
 
 
 def get_arguments ():
-    parser = argparse.ArgumentParser(description='Data generator program.')
+    parser = ArgumentParser(description='Data generator program.')
     parser.add_argument('-f', '--file', default="Data/data.csv", help='file')
     res = parser.parse_args(sys.argv[1:])
     return (res.file)
@@ -128,7 +128,7 @@ def main():
     try:
         # Retrieving data
         filename = get_arguments()
-        df = vaex.open(filename)
+        df = vx_open(filename)
         X = np.array(df[['km']]).flatten()
         y = np.array(df[['price']]).flatten()
 
@@ -137,14 +137,17 @@ def main():
 
         # Add 1 vector for biais unit
         X = np.c_[np.ones(X.shape[0]), X]
+    except Exception as e:
+        print(e)
 
+    try:
         # Training the bonuses
         print("Training with weird parameters ...\n")
         theta = np.zeros(2)
         theta, J_history = gradient_descent(X, y, theta,
                         alpha=0.01,
-                        num_iters=200,
-                        decay_rate=0.0001, lbda=0.0001, batch_size=14)
+                        num_iters=20000,
+                        decay_rate=0.00001, lbda=0.0001, batch_size=14, tol=5)
 
         fit = plt.figure()
         ax = plt.axes()
@@ -156,14 +159,17 @@ def main():
         with open("Models/weights.csv", "w") as weight_file:
             weight_file.write("biais,weight\n")
             weight_file.write("{},{}\n".format(theta[0], theta[1]))
-
+    except Exception as e:
+        print(e)
+        
+    try:
         # Training the model
         print("\nTraining on the data ...\n")
         theta = np.zeros(2)
         theta, J_history = gradient_descent(X, y, theta,
                         alpha=0.01,
                         num_iters=20000,
-                        decay_rate=0.0, lbda=0.0)
+                        decay_rate=0.0, lbda=0.0, tol=1)
 
         fit = plt.figure()
         ax = plt.axes()
