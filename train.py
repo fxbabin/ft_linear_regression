@@ -81,13 +81,13 @@ def gradient_descent(X, y, theta,
             diff = np.dot((predict(X_tmp,theta) - y_tmp), X_tmp)
             theta = theta - alpha * (diff / m + reg)
             
-            # tol
-            curr_cost = cost(X_tmp, y_tmp, theta, lbda=lbda, regularization=regularization)
-            if abs(prev_cost - curr_cost) < tol:
-                print("training finished in {} iterations".format(i))
-                return theta, J_history
-            prev_cost = curr_cost
-            J_history.append(curr_cost)        
+        # tol
+        curr_cost = cost(X_tmp, y_tmp, theta, lbda=lbda, regularization=regularization)
+        if abs(prev_cost - curr_cost) < tol:
+            print("training finished in {} iterations".format(i))
+            return theta, J_history
+        prev_cost = curr_cost
+        J_history.append(curr_cost)        
         
         # learning rate decay
         alpha = exponentionnal_decay(alpha_0, i, decay_rate)
@@ -113,6 +113,9 @@ def plot(df, theta, name):
 
     plt.scatter(X, y)
     abline(theta[1], theta[0])
+    plt.xlabel("mileage")
+    plt.ylabel("price")
+    plt.title("Evolution of price depending on mileage")
     plt.savefig(name + ".png")
     plt.clf()
 
@@ -152,6 +155,9 @@ def main():
         fit = plt.figure()
         ax = plt.axes()
         ax.plot(J_history)
+        plt.xlabel("iterations")
+        plt.ylabel("cost")
+        plt.title("Cost evolution through training")
         plt.savefig('cost_history_bonus.png')
 
         plot(df, theta, "visu_bonus")
@@ -174,6 +180,9 @@ def main():
         fit = plt.figure()
         ax = plt.axes()
         ax.plot(J_history)
+        plt.xlabel("iterations")
+        plt.ylabel("cost")
+        plt.title("Cost evolution through training")
         plt.savefig('cost_history.png')
 
         plot(df, theta, "visu")
