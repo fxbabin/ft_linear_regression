@@ -7,8 +7,8 @@ This project objective is to recode a linear regression function in order to pre
 A basic implementation gives us a good evolution of the cost and prediction in approximately 1000 iterations.
 
 <p align="center">
-<img src="imgs/batch_gd.png" alt="drawing" width="300"/>
-<img src="imgs/model.png" alt="drawing" width="300"/>
+<img src="imgs/batch_gd.png" alt="drawing" width="400"/>
+<img src="imgs/model.png" alt="drawing" width="400"/>
 <p/>
 
 Some bonus parts were made during this project :
